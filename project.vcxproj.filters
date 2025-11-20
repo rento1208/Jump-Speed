@@ -74,6 +74,7 @@
     <ClCompile Include="Source\Item.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Source\Item.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">

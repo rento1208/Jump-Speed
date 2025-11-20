@@ -4,11 +4,13 @@
 #include "Object2D.h"
 #include "Player.h"
 #include <assert.h>
+#include "SoundManager.h"
 
 
 
 PlayScene::PlayScene()
 {
+	g_soundManager = new SoundManager();
 	hBgm = LoadSoundMem("data/sound/background.mp3");
 	hBgm2 = LoadSoundMem("data/sound/gameover.mp3");
 	

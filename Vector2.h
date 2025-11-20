@@ -5,6 +5,7 @@ struct VECTOR2
 {
 	float x;
 	float y;
+	
 };
 
 inline VECTOR2 operator +(VECTOR2 a, VECTOR2 b)

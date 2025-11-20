@@ -1,16 +1,22 @@
 #pragma once
-#include "Object2D.h"
+#include "Player.h"
+#include "Stage.h"
 
-extern int g_score;
+enum class ItemType {
+    JumpUp,       // チップ17
+    SpeedUp,      // チップ14
+    FullRecover,  // チップ15
+    GravityUp,    // チップ16
+    Score,        // チップ11
+    GameClear     // チップ10
+};
 
-class Item : public Object2D
-{
+class Item {
 public:
-	Item();
-	~Item();
-	void Update();
-	void Draw();
-	
+    Item(ItemType type) : type(type) {}
+	~Item() {}
+    void Apply(Player* player, Stage* stage, const VECTOR2& pos);
+
 private:
-	
+    ItemType type;
 };

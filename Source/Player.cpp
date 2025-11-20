@@ -4,12 +4,11 @@
 #include "../ImGui/imgui.h"
 #include "CsvReader.h"
 #include <time.h>
-#include <windows.h>
+#include "Item.h"
+#include "SoundManager.h"
+
 
 int g_score = 0;
-//static const float Gravity = 0.05f;
-//static const float JumpHeight = 64.0f * 2.0f;
-//static const float JumpV0 = -sqrtf(2.0f * Gravity * JumpHeight);
 
 Player::Player() : Player(VECTOR2(100,200))
 {
@@ -46,11 +45,6 @@ Player::Player(VECTOR2 pos)
 
 	position = pos;
 	velocityY = 0.0f;
-	hSound = LoadSoundMem("data/sound/jump.mp3");
-	hSound2 = LoadSoundMem("data/sound/coin.mp3");
-	hSound3 = LoadSoundMem("data/sound/status.mp3");
-	hSound4 = LoadSoundMem("data/sound/result.mp3");
-	hSound5 = LoadSoundMem("data/sound/poison.mp3");
 }
 	
 
@@ -101,7 +95,7 @@ void Player::Update()
 				velocityY = JumpV0;
 				}
 			prevPushed = true;
-			PlaySoundMem(hSound, DX_PLAYTYPE_BACK);
+			g_soundManager->Play(SoundType::Jump);
 		}
 		else {
 			prevPushed = false;
@@ -109,6 +103,7 @@ void Player::Update()
 		}
 	}
 	{
+		// 重力処理
 		position.y += velocityY;
 		velocityY += Gravity;
 		onGround = false;
@@ -151,6 +146,7 @@ void Player::Update()
 			st->SetScrollX(position.x - LeftLimit);
 		}
 	}
+	
 	VECTOR2 offsets[] = {
 	VECTOR2(-24, -32), // 左上
 	VECTOR2(0, -32), // 真上
@@ -161,92 +157,37 @@ void Player::Update()
 	VECTOR2(0,  32), // 真下
 	VECTOR2(24,  32), // 右下
 	};
-
-	//チップ17：ジャンプ力アップ
+	
+	//アイテムを取得した際の処理
 	for (const auto& offset : offsets) {
 		VECTOR2 checkPos = position + offset;
 		int chip = st->GetChip(checkPos);
-		if (chip == 17) {
-			PlaySoundMem(hSound3, DX_PLAYTYPE_BACK); 
-			JumpHeight += 80.0f;
-			JumpV0 = -sqrtf(2.0f * Gravity * JumpHeight);
-			st->RemoveChip(checkPos);
-			break;
+		if (chip == 0) continue;
+
+		ItemType type;
+		switch (chip) {
+		case 10: type = ItemType::GameClear; break;
+		case 11: type = ItemType::Score; break;
+		case 14: type = ItemType::SpeedUp; break;
+		case 15: type = ItemType::FullRecover; break;
+		case 16: type = ItemType::GravityUp; break;
+		case 17: type = ItemType::JumpUp; break;
+		default: continue;
 		}
+
+		Item item(type);
+		item.Apply(this, st, checkPos);
+
+		// スコアやゲームクリアの場合は処理をスキップ
+		if (type == ItemType::Score || type == ItemType::GameClear) return;
 	}
-
-	//チップ14：移動速度アップ
-	for (const auto& offset : offsets) {
-		VECTOR2 checkPos = position + offset;
-		int chip = st->GetChip(checkPos);
-		if (chip == 14) {
-			PlaySoundMem(hSound3, DX_PLAYTYPE_BACK);  //SE再生
-			moveSpeed += 0.5f;
-			st->RemoveChip(checkPos);
-			break;
-		}
-	}
-	//チップ16 :詰み（重力+）
-	for (const auto& offset : offsets) {
-		VECTOR2 checkPos = position + offset;
-		int chip = st->GetChip(checkPos);
-		if (chip == 16) {
-			PlaySoundMem(hSound5, DX_PLAYTYPE_BACK); //SE再生
-			JumpHeight = JumpHeight;
-			JumpV0 = -sqrtf(2.0f * Gravity * JumpHeight);
-			moveSpeed = moveSpeed;
-			Gravity += 3.0f;
-			st->RemoveChip(checkPos);
-			break;
-		}
-	}
-	//チップ15 : 全能力回復
-	for (const auto& offset : offsets) {
-		VECTOR2 checkPos = position + offset;
-		int chip = st->GetChip(checkPos);
-		if (chip == 15) {
-			//JumpHeight = 100.0f;
-			//JumpV0 = -sqrtf(2.0f * Gravity * JumpHeight);
-			//moveSpeed = 1.5;
-			//Gravity -= 3.0f;
-			st->RemoveChip(checkPos);
-			break;
-		}
-	}
-
-		//チップ11：スコアプラス
-		for (const auto& offset : offsets) {
-			VECTOR2 checkPos = position + offset;
-			int chip = st->GetChip(checkPos);
-
-			if (chip == 11) {
-				PlaySoundMem(hSound2, DX_PLAYTYPE_BACK);  //SE再生
-				st->RemoveChip(checkPos);  // チップを消す
-				g_score += 1;
-
-				return; // 以降の更新処理をスキップ
-			}
-		}
-		//チップ10：ゲームクリア条件
-		for (const auto& offset : offsets) {
-			VECTOR2 checkPos = position + offset;
-			int chip = st->GetChip(checkPos);
-			if (chip == 10) {
-				PlaySoundMem(hSound4, DX_PLAYTYPE_BACK); //SE再生
-				st->RemoveChip(checkPos);  // チップを消す
-				SceneManager::ChangeScene("GAMECLEAR"); // シーン遷移
-				return; // 以降の更新処理をスキップ
-			}
-		}
-		
-
-
-
-		/*ImGui::Begin("Player");
+     /*ImGui::Begin("Player");
 		ImGui::Checkbox("onGround", &onGround);
 		ImGui::InputFloat("positionY", &position.y);
 		ImGui::End();*/
-	}
+}
+
+	
 
 void Player::DrawScore()
 {
