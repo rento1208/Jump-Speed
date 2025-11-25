@@ -2,6 +2,7 @@
 #include "Stage.h"
 #include "Player.h"
 GameClearScene::GameClearScene()
+	:SceneBase(), hImage(0), changeTimer(0.0f)
 {
 	hImage = LoadGraph("data/image/Stage.jpeg");
 }

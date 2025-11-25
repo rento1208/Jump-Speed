@@ -6,12 +6,16 @@ SoundManager* g_soundManager = nullptr;
 
 
 SoundManager::SoundManager()
+	:Object2D(),handle(-1),volume(150)
 {
     sounds[SoundType::Jump] = LoadSoundMem("data/sound/jump.mp3");
     sounds[SoundType::Coin] = LoadSoundMem("data/sound/coin.mp3");
     sounds[SoundType::Status] = LoadSoundMem("data/sound/status.mp3");
     sounds[SoundType::Result] = LoadSoundMem("data/sound/result.mp3");
     sounds[SoundType::Poison] = LoadSoundMem("data/sound/poison.mp3");
+	sounds[SoundType::BackGround] = LoadSoundMem("data/sound/background.mp3");
+	sounds[SoundType::GameOver] = LoadSoundMem("data/sound/gameover.mp3");
+    
 }
 
 SoundManager::~SoundManager() {
@@ -33,3 +37,29 @@ void SoundManager::Play(SoundType type) {
         PlaySoundMem(sounds[type], DX_PLAYTYPE_BACK);
     }
 }
+
+void SoundManager::PlayBGM(SoundType type)
+{
+    if (sounds.find(type) != sounds.end()) {
+        return;
+    }
+
+    handle = sounds[type];
+
+    if (CheckSoundMem(handle == 0))
+    {
+        PlaySoundMem(handle, DX_PLAYTYPE_LOOP);
+        ChangeVolumeSoundMem(volume, handle);
+    }
+}
+
+void SoundManager::StopSound(SoundType type)
+{
+    if (sounds.find(type) == sounds.end())
+    {
+        return;
+
+        StopSoundMem(sounds[type]);
+    }
+}
+

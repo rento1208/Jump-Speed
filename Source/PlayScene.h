@@ -10,7 +10,5 @@ public:
 	void Update() override;
 	void Draw() override;
 private:
-	int hImage;
-	int hBgm;
-	int hBgm2;
+	int hImage_;
 };

@@ -3,6 +3,7 @@
 #include "Player.h"
 
 GameOverScene::GameOverScene()
+	:SceneBase(), hImage(0), changeTimer(0.0f)
 {
 	hImage = LoadGraph("data/image/GameOver.jpg");
 }
@@ -26,7 +27,6 @@ void GameOverScene::Draw()
 {
 	DrawExtendGraph(0, 0, 1280, 720, hImage, TRUE);
 	int rsize = SetFontSize(50);
-	//DrawString(450, 200, "ゲームオーバー", rsize, GetColor(255, 255, 0));
 	int time = GetNowCount();
 	if ((time / 700) % 2 == 0) {
 		DrawString(390, 450, "Push [T]Key To Title", GetColor(255, 255, 255));

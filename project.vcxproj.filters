@@ -75,6 +75,9 @@
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\SoundManager.cpp" />
+    <ClCompile Include="Source\Enemyh.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\Screen.h" />
@@ -162,6 +165,9 @@
       <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Source\SoundManager.h" />
+    <ClInclude Include="Source\Enemyh.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Library">
