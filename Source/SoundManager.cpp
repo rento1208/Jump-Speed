@@ -41,10 +41,10 @@ void SoundManager::Play(SoundType type) {
 void SoundManager::PlayBGM(SoundType type)
 {
     if (sounds.find(type) != sounds.end()) {
-        return;
+        handle = sounds[type];
     }
 
-    handle = sounds[type];
+   
 
     if (CheckSoundMem(handle == 0))
     {

@@ -153,7 +153,7 @@
     <ClInclude Include="Library\Time.h" />
     <ClInclude Include="Source\BootScene.h" />
     <ClInclude Include="Source\CsvReader.h" />
-    <ClInclude Include="Source\Enemyh.h" />
+    <ClInclude Include="Source\Enemy.h" />
     <ClInclude Include="Source\GameClearScene.h" />
     <ClInclude Include="Source\Item.h" />
     <ClInclude Include="Source\Object2D.h" />
@@ -184,7 +184,7 @@
     <ClCompile Include="Library\Time.cpp" />
     <ClCompile Include="Source\BootScene.cpp" />
     <ClCompile Include="Source\CsvReader.cpp" />
-    <ClCompile Include="Source\Enemyh.cpp" />
+    <ClCompile Include="Source\Enemy.cpp" />
     <ClCompile Include="Source\GameClearScene.cpp" />
     <ClCompile Include="Source\Item.cpp" />
     <ClCompile Include="Source\Object2D.cpp" />

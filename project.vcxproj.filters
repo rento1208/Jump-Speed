@@ -14,9 +14,6 @@
     <ClCompile Include="Source\TitleScene.cpp">
       <Filter>TitleScene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\PlayScene.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
     <ClCompile Include="ImGui\imgui.cpp">
       <Filter>ImGui</Filter>
     </ClCompile>
@@ -50,7 +47,20 @@
     <ClCompile Include="Library\Time.cpp">
       <Filter>Library</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Stage.cpp">
+    <ClCompile Include="Source\GameOverScene.cpp">
+      <Filter>ResultScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\TitleStage.cpp">
+      <Filter>TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SoundManager.cpp" />
+    <ClCompile Include="Source\CsvReader.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Enemy.cpp">
+      <Filter>PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Item.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\Object2D.cpp">
@@ -59,24 +69,14 @@
     <ClCompile Include="Source\Player.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\CsvReader.cpp">
+    <ClCompile Include="Source\PlayScene.cpp">
       <Filter>PlayScene</Filter>
     </ClCompile>
-    <ClCompile Include="Source\GameOverScene.cpp">
-      <Filter>ResultScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\TitleStage.cpp">
-      <Filter>TitleScene</Filter>
+    <ClCompile Include="Source\Stage.cpp">
+      <Filter>PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Source\GameClearScene.cpp">
       <Filter>ResultScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Item.cpp">
-      <Filter>PlayScene</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\SoundManager.cpp" />
-    <ClCompile Include="Source\Enemyh.cpp">
-      <Filter>PlayScene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,9 +96,6 @@
     </ClInclude>
     <ClInclude Include="Source\TitleScene.h">
       <Filter>TitleScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\PlayScene.h">
-      <Filter>PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="ImGui\imconfig.h">
       <Filter>ImGui</Filter>
@@ -139,18 +136,6 @@
     <ClInclude Include="Library\Time.h">
       <Filter>Library</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Object2D.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Stage.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Player.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\CsvReader.h">
-      <Filter>PlayScene</Filter>
-    </ClInclude>
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Source\GameOverScene.h">
       <Filter>ResultScene</Filter>
@@ -161,11 +146,26 @@
     <ClInclude Include="Source\GameClearScene.h">
       <Filter>ResultScene</Filter>
     </ClInclude>
+    <ClInclude Include="Source\SoundManager.h" />
+    <ClInclude Include="Source\CsvReader.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Enemy.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Item.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
-    <ClInclude Include="Source\SoundManager.h" />
-    <ClInclude Include="Source\Enemyh.h">
+    <ClInclude Include="Source\Object2D.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Player.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\PlayScene.h">
+      <Filter>PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Stage.h">
       <Filter>PlayScene</Filter>
     </ClInclude>
   </ItemGroup>

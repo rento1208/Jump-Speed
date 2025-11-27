@@ -1,151 +1,194 @@
 #include "Enemy.h"
-#include "Stage.h"
 #include <DxLib.h>
-#include "../ImGui/imgui.h"
-#include "CsvReader.h"
-#include <assert.h>
+#include <cassert>
 
-Enemy::Enemy(VECTOR2 pos) {
-    hImage = LoadGraph("data/image/enemy.png");
-    assert(hImage > 0);
+Enemy::Enemy(float x, float y)
+    : Object2D(),
+    hp(3),
+    patrolSpeed(2.0f),
+    chaseSpeed(3.0f),
+    visionRange(200.0f),
+    attackRange(40.0f),
+    attackCooldown(1.0f),
+    attackTimer(0.0f),
+    animIndex_(0),
+    animTimer_(0.0f)
+{
+    x = 400.0f;
+    y = 300.0f;
+    facingRight = true;
 
-    position = pos;
-    imageSize = VECTOR2(128, 160);        
-    colliderSize = VECTOR2(64, 160);    
+    // デフォルト画像（CSV使う場合は上書きされる）
+    img_ = LoadGraph("enemy.png");
 
-    hp = maxHp = 50;
-    direction = -1;
-    moveSpeed = 2.0f;
-    knockbackTimer = 0;
-    knockbackVelocity = VECTOR2(2, 0);
-    velocityY = 0.0f;
-
+    state_ = ENEMY_PATROL;
+    currentAnimState_ = state_;
 }
 
-void Enemy::Update() {
-    if (hp <= 0) {
-        DestroyMe();
+// Destructor
+Enemy::~Enemy()
+{
+    // スプライト削除
+    if (img_ != -1) {
+        DeleteGraph(img_);
+    }
+}
+
+// CSVからアニメーション読み込み
+void Enemy::LoadAnimationCSV(const std::string& csvFile, const std::string& spritePath)
+{
+    CsvReader csv(csvFile);
+
+    img_ = LoadGraph(spritePath.c_str());
+    assert(img_ != -1);
+
+    for (int i = 1; i < csv.GetLines(); i++) // 1行目はヘッダー
+    {
+        std::string stateStr = csv.GetString(i, 0);
+        int x = csv.GetInt(i, 1);
+        int y = csv.GetInt(i, 2);
+        int w = csv.GetInt(i, 3);
+        int h = csv.GetInt(i, 4);
+        float time = csv.GetFloat(i, 5);
+
+        AnimFrame f = { x, y, w, h, time };
+
+        // CSVのState文字列をState enumに変換
+        State s = ENEMY_PATROL;
+        if (stateStr == "PATROL") s = ENEMY_PATROL;
+        else if (stateStr == "CHASE") s = ENEMY_CHASE;
+        else if (stateStr == "ATTACK") s = ENEMY_ATTACK;
+        else if (stateStr == "HURT") s = ENEMY_HURT;
+        else if (stateStr == "DEAD") s = ENEMY_DEAD;
+
+        anims_[s].push_back(f);
+    }
+}
+
+// 状態を変更（アニメも同期）
+void Enemy::SetState(State s)
+{
+    if (state_ != s) {
+        state_ = s;
+        currentAnimState_ = s;
+        animIndex_ = 0;
+        animTimer_ = 0.0f;
+    }
+}
+
+// Update 内で呼び出す
+void Enemy::Update(float dt, float playerX, float playerY)
+{
+    attackTimer -= dt;
+
+    float dx = playerX - x;
+    float dist = abs(dx);
+
+    // 状態ごとの動作
+    switch (state_)
+    {
+    case ENEMY_PATROL:
+        vx = patrolSpeed * (facingRight ? 1 : -1);
+        x += vx;
+
+        if (x < 50 || x > 750) Flip();
+        break;
+
+    case ENEMY_CHASE:
+        vx = chaseSpeed * (dx > 0 ? 1 : -1);
+        x += vx;
+
+        if (dx > 0 && !facingRight) Flip();
+        if (dx < 0 && facingRight)  Flip();
+        break;
+
+    case ENEMY_ATTACK:
+        if (attackTimer <= 0.0f) {
+            attackTimer = attackCooldown;
+            // TODO: プレイヤーにダメージ処理
+        }
+        break;
+
+    case ENEMY_HURT:
+    case ENEMY_DEAD:
+        vx = 0;
+        break;
+    }
+
+    // 状態遷移
+    bool canSee = CanSeePlayer(playerX, playerY);
+
+    if (state_ != ENEMY_DEAD && state_ != ENEMY_HURT)
+    {
+        if (canSee && dist > attackRange)
+            SetState(ENEMY_CHASE);
+        else if (canSee && dist <= attackRange)
+            SetState(ENEMY_ATTACK);
+        else
+            SetState(ENEMY_PATROL);
+    }
+
+    // アニメ更新
+    if (anims_.count(currentAnimState_) > 0)
+    {
+        animTimer_ += dt;
+        const AnimFrame& frame = anims_[currentAnimState_][animIndex_];
+
+        if (animTimer_ >= frame.time)
+        {
+            animTimer_ = 0.0f;
+            animIndex_++;
+            if (animIndex_ >= anims_[currentAnimState_].size())
+                animIndex_ = 0;
+        }
+    }
+}
+
+// 描画
+void Enemy::Draw()
+{
+    if (anims_.count(currentAnimState_) == 0) {
+        // CSVアニメ無ければ通常描画
+        if (facingRight)
+            DrawGraph((int)x, (int)y, img_, TRUE);
+        else
+            DrawTurnGraph((int)x, (int)y, img_, TRUE);
         return;
     }
 
-    Stage* st = FindGameObject<Stage>();
-    float halfW = colliderSize.x / 2.0f;
-    float halfH = colliderSize.y / 2.0f;
+    const AnimFrame& frame = anims_[currentAnimState_][animIndex_];
 
-    if (knockbackTimer > 0) {
-        position.x += knockbackVelocity.x;
-        position.y += knockbackVelocity.y;
-        knockbackTimer--;
+    if (facingRight)
+    {
+        DrawRectGraph((int)x, (int)y,
+            frame.x, frame.y, frame.w, frame.h,
+            img_, TRUE);
     }
-    else {
-        // 水平方向の移動（右なら +、左なら -）
-        position.x += direction * moveSpeed;
-
-        // 右向きの時、右端の上下で壁に当たっていたら反転
-        if (direction > 0) {
-            int pushTop = st->CheckRight(VECTOR2(position.x + halfW, position.y - halfH));
-            int pushBottom = st->CheckRight(VECTOR2(position.x + halfW, position.y + halfH));
-            if (pushTop > 0 || pushBottom > 0) {
-                position.x -= moveSpeed; // 移動を取り消す
-                direction *= -1;         // 向きを反転
-            }
-        }
-
-        // 左向きの時、左端の上下で壁に当たっていたら反転
-        else {
-            int pushTop = st->CheckLeft(VECTOR2(position.x - halfW, position.y - halfH));
-            int pushBottom = st->CheckLeft(VECTOR2(position.x - halfW, position.y + halfH));
-            if (pushTop > 0 || pushBottom > 0) {
-                position.x += moveSpeed; // 移動を取り消す
-                direction *= -1;         // 向きを反転
-            }
-        }
-
-        // 地面に立っているか確認（Y方向の当たり判定）
-        if (velocityY < 0.0f) {
-            int push = st->CheckUp(VECTOR2(position.x - halfW, position.y - halfH));
-            if (push > 0) {
-                velocityY = 0.0f;
-                position.y += push;
-            }
-            push = st->CheckUp(VECTOR2(position.x + halfW, position.y - halfH));
-            if (push > 0) {
-                velocityY = 0.0f;
-                position.y += push;
-            }
-            push = st->CheckUp(VECTOR2(position.x, position.y - halfH));
-            if (push > 0) {
-                velocityY = 0.0f;
-                position.y += push;
-            }
-        }
-        else {
-            int push = st->CheckDown(VECTOR2(position.x - halfW, position.y + halfH + 1));
-            if (push > 0) {
-                velocityY = 0.0f;
-                onGround = true;
-                position.y -= push - 1;
-            }
-            push = st->CheckDown(VECTOR2(position.x + halfW, position.y + halfH + 1));
-            if (push > 0) {
-                velocityY = 0.0f;
-                onGround = true;
-                position.y -= push - 1;
-            }
-            push = st->CheckDown(VECTOR2(position.x, position.y + halfH + 1));
-            if (push > 0) {
-                velocityY = 0.0f;
-                onGround = true;
-                position.y -= push - 1;
-            }
-        }
+    else
+    {
+        DrawRectRotaGraph2((int)x, (int)y,
+            frame.w / 2, frame.h / 2,
+            1.0f, 1.0f, 0.0f,
+            img_, TRUE,
+            frame.x, frame.y, frame.w, frame.h,
+            TRUE);
     }
 }
 
-void Enemy::Draw() {
-    Stage* st = FindGameObject<Stage>();
-    float x = position.x - st->ScrollX();
-    float y = position.y;
+// プレイヤーを視認できるか
+bool Enemy::CanSeePlayer(float playerX, float playerY)
+{
+    float dx = playerX - x;
+    if (abs(dx) > visionRange) return false;
 
-    // 敵の画像を描画
-    DrawGraph((int)(x - imageSize.x / 2), (int)(y - imageSize.y), hImage, TRUE);
+    if (dx > 0 && !facingRight) return false;
+    if (dx < 0 && facingRight)  return false;
 
-    int barWidth = 48;
-    int barHeight = 6;
-    int left = (int)(x - barWidth / 2);
-    int top = (int)(y - imageSize.y - 10);
-    int right = (int)(x + barWidth / 2);
-    int bottom = top + barHeight;
-
-    // 背景（黒）
-    DrawBox(left, top, right, bottom, GetColor(0, 0, 0), TRUE);
-
-    // HP割合
-    float hpRatio = (float)hp / maxHp;
-    int hpRight = left + (int)(barWidth * hpRatio);
-
-    // 色変更（緑 → 黄 → 赤）
-    int color;
-    if (hpRatio <= 0.1f) color = GetColor(255, 0, 0);
-    else if (hpRatio <= 0.5f) color = GetColor(255, 255, 0);
-    else color = GetColor(0, 255, 0);
-
-    DrawBox(left, top, hpRight, bottom, color, TRUE);
-
-
-
-    DrawBox((int)(x - colliderSize.x / 2), (int)(y - colliderSize.y), (int)(x + colliderSize.x / 2), (int)(y), GetColor(255, 0, 0), FALSE); // 赤い枠線
-}
-void Enemy::TakeDamage(int damage) {
-    hp -= damage;
-    if (hp < 0) hp = 0;
-    printf("Enemy took %d damage, hp = %d\n", damage, hp); 
+    return true;
 }
 
-VECTOR2 Enemy::GetPosition() const {
-    return position;
-}
-
-VECTOR2 Enemy::GetColliderSize() const {
-    return colliderSize;
+// 向き反転
+void Enemy::Flip()
+{
+    facingRight = !facingRight;
 }
