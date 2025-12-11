@@ -8,7 +8,10 @@ enum class ItemType {
     FullRecover,  // チップ15
     GravityUp,    // チップ16
     Score,        // チップ11
-    GameClear     // チップ10
+    GameClear,     // チップ10
+    Sword,         //チップ12
+	Shield		  //チップ13
+
 };
 
 class Item {

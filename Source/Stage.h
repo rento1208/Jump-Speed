@@ -1,5 +1,6 @@
 #pragma once
 #include "Object2D.h"
+#include "Enemy.h"
 #include <vector>
 
 class Stage : public Object2D {
@@ -37,6 +38,7 @@ private:
 	bool IsWall(VECTOR2 pos);
 
 	std::vector<std::vector<int>> map;
+	std::vector<Enemy*> enemies;
 
 	int hitemImage;
 	

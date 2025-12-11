@@ -3,6 +3,7 @@
 #include "Stage.h"
 #include "Object2D.h"
 #include "Player.h"
+#include "Enemy.h"
 #include <assert.h>
 #include "SoundManager.h"
 
@@ -21,6 +22,7 @@ PlayScene::PlayScene()
 
 PlayScene::~PlayScene()
 {
+
 }
 
 void PlayScene::Update()
@@ -29,6 +31,8 @@ void PlayScene::Update()
     g_soundManager->PlayBGM(SoundType::BackGround);
 
     Player* player = FindGameObject<Player>();
+	Enemy* enemy = FindGameObject<Enemy>();
+	
 
     if (player && player->GetPosition().y > 1200)
     {
@@ -38,6 +42,7 @@ void PlayScene::Update()
         // ÉVÅ[Éìêÿë÷
         SceneManager::ChangeScene("GAMEOVER");
     }
+   
 }
 
 void PlayScene::Draw()
@@ -45,6 +50,7 @@ void PlayScene::Draw()
 	DrawExtendGraph(0, 0, 1280, 720, hImage_, TRUE);
 	//DrawString(0, 0, "PLAY SCENE", GetColor(255, 255, 255));
 	//DrawString(100, 400, "Push [T]Key To Title", GetColor(255, 255, 255));
+    
 }
 
 

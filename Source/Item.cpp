@@ -52,6 +52,21 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
    case ItemType::GameClear:
       g_soundManager->Play(SoundType::Result);
        stage->RemoveChip(pos);
+       SceneManager::ChangeScene("GAMECLEAR");
        break;
+
+   case ItemType::Sword:
+       // ‚±‚±‚ÉŒ•‚ÌŒø‰Ê‚ð‚Ü‚Æ‚ß‚é
+       stage->RemoveChip(pos);
+       g_soundManager->Play(SoundType::Status);
+       break;
+
+   case ItemType::Shield:
+	   // ‚±‚±‚É‚‚ÌŒø‰Ê‚ð‚Ü‚Æ‚ß‚é
+	   stage->RemoveChip(pos);
+	   g_soundManager->Play(SoundType::Status);
+	   break;
    }
+   
+
 }

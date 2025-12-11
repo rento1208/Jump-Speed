@@ -172,6 +172,8 @@ void Player::Update()
 		case 15: type = ItemType::FullRecover; break;
 		case 16: type = ItemType::GravityUp; break;
 		case 17: type = ItemType::JumpUp; break;
+		case 12: type = ItemType::Sword; break;
+		case 13: type = ItemType::Shield; break;
 		default: continue;
 		}
 

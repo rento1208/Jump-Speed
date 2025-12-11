@@ -36,3 +36,5 @@ SceneBase * SceneFactory::Create(const std::string & name)
 	assert(false);
 	return nullptr;
 }
+
+

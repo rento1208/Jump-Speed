@@ -63,6 +63,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 #endif
 
 		AppUpdate();
+		// ← ここで ESC の押下をチェックしてループを抜ける
+		if (ProcessMessage() == -1 || AppIsExit() || CheckHitKey(KEY_INPUT_ESCAPE)) {
+			break;
+		}
 
 		if (ProcessMessage() == -1 || AppIsExit()) {
 			break;

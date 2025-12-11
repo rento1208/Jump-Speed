@@ -2,6 +2,7 @@
 #include <assert.h>
 #include <vector>
 #include "Player.h"
+#include "Enemy.h"
 #include "CsvReader.h"
 
 
@@ -37,7 +38,7 @@ Stage::Stage()
 	
 
 	scrollX = 0;
-
+	
 	for (int y = 0; y < map.size(); y++) {
 		for (int x = 0; x < map[y].size(); x++) {
 			int c = map[y][x];
@@ -48,7 +49,21 @@ Stage::Stage()
 			}
 		}
 	}
+		
+	for (int y = 0; y < map.size(); y++){
+		for (int x = 0; x < map[y].size(); x++){
+			int d = map[y][x];
+			if (d == 8){
+			int px = x * imageSize.x + imageSize.x / 2.0f;
+			int py = y * imageSize.y + imageSize.y / 2.0f;
+
+				Enemy* e = new Enemy(px, py);
+				enemies.push_back(e);
+			}
+		}
+	}
 }
+
 
 Stage::~Stage()
 {
