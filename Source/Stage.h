@@ -32,19 +32,23 @@ public:
 	int GetChip(const VECTOR2& worldPos); // 指定位置のチップ番号を返す
 
 	void RemoveChip(const VECTOR2& worldPos); // 指定位置のチップを削除（例：0にする）
+
+	bool IsWall(const VECTOR2& pos) const;
+
 private:
 	float scrollX; // 横スクロール量
 
-	bool IsWall(VECTOR2 pos);
-
-	std::vector<std::vector<int>> map;
-	std::vector<Enemy*> enemies;
-
-	int hitemImage;
 	
+	std::vector<std::vector<int>> map;
+
+	int hItemImage;
+
 	int mapWidth;  // マップ横サイズ（列数）
 
 	int mapHeight; // マップ縦サイズ（行数）
 	
-	
+	std::vector<Enemy*> enemies;
+
+
 };
+

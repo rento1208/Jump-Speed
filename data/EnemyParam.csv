@@ -1,3 +1,3 @@
 Gravity,0.05,キャラクターの重さ
 JumpHeight,120,ジャンプの高さ（１ブロックが64
-PatrolSpeed ,2,横移動の速度
+Speed ,2,横移動の速度

@@ -45,6 +45,10 @@ Player::Player(VECTOR2 pos)
 
 	position = pos;
 	velocityY = 0.0f;
+	onGround = false;
+	prevPushed = false;
+	AttackPower = 0.0f;
+	DiffencePower = 0.0f;
 }
 	
 
@@ -193,9 +197,13 @@ void Player::Update()
 
 void Player::DrawScore()
 {
-	//スコアを表示
-	DrawFormatString(10, 10, GetColor(0, 0, 0), "Score: %d", g_score);
+// スコアを表示
+ float fSize = SetFontSize(30);
+DrawFormatString(10, 10, GetColor(0, 0, 0), "Score: %d", g_score,fSize);
+DrawFormatString(10, 50, GetColor(0, 0, 0), "Attack Power: %.0f", AttackPower,fSize);
+DrawFormatString(10, 90, GetColor(0, 0, 0), "Diffence Power: %.0f", DiffencePower,fSize);
 }
+
 
 void Player::Draw()
 {

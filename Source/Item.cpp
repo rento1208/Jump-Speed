@@ -17,6 +17,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        stage->RemoveChip(pos);
        break;
 	   
+      
        // スピードアップ
    case ItemType::SpeedUp:
       g_soundManager->Play(SoundType::Poison);
@@ -25,6 +26,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        stage->RemoveChip(pos);
        break;
 	  
+      
        // 体力全回復
    case ItemType::FullRecover:
       g_soundManager->Play(SoundType::Poison);
@@ -32,6 +34,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        stage->RemoveChip(pos);
        break;
 	  
+      
        // 重力アップ
    case ItemType::GravityUp:
       g_soundManager->Play(SoundType::Poison);
@@ -41,6 +44,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        stage->RemoveChip(pos);
        break;
 	  
+       
        // スコア獲得
    case ItemType::Score:
       g_soundManager->Play(SoundType::Coin);
@@ -48,6 +52,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        g_score += 1;
        break;
 	   
+       
        // ゲームクリア
    case ItemType::GameClear:
       g_soundManager->Play(SoundType::Result);
@@ -55,15 +60,21 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        SceneManager::ChangeScene("GAMECLEAR");
        break;
 
+	   
+       // 剣の取得
    case ItemType::Sword:
        // ここに剣の効果をまとめる
        stage->RemoveChip(pos);
+	   player->AttackPower += 1.0f; // 攻撃可能回数を増やす
        g_soundManager->Play(SoundType::Status);
        break;
 
+	   
+       // 盾の取得
    case ItemType::Shield:
 	   // ここに盾の効果をまとめる
 	   stage->RemoveChip(pos);
+	   player->DiffencePower += 1.0f; // 防御可能回数を増やす
 	   g_soundManager->Play(SoundType::Status);
 	   break;
    }

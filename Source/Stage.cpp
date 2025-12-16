@@ -30,8 +30,8 @@ Stage::Stage()
 	anim = 3;
 	animY = 1;
 
-	hitemImage = LoadGraph("data/image/item.png");
-	assert(hitemImage > 0);
+	hItemImage = LoadGraph("data/image/item.png");
+	assert(hItemImage > 0);
 	itemImageSize = VECTOR2(64, 64);
 	anim = 10;
 	animY = 16;
@@ -53,12 +53,14 @@ Stage::Stage()
 	for (int y = 0; y < map.size(); y++){
 		for (int x = 0; x < map[y].size(); x++){
 			int d = map[y][x];
-			if (d == 8){
-			int px = x * imageSize.x + imageSize.x / 2.0f;
-			int py = y * imageSize.y + imageSize.y / 2.0f;
+			if (d == 8) {
+				int px = x * imageSize.x + imageSize.x / 2;
+				int py = y * imageSize.y + imageSize.y / 2;
 
-				Enemy* e = new Enemy(px, py);
+				Enemy* e = new Enemy(VECTOR2(px, py));
 				enemies.push_back(e);
+
+				map[y][x] = 0; // 出現後は床
 			}
 		}
 	}
@@ -88,10 +90,14 @@ void Stage::Draw()
 				int chipIndex = c - 10;
 				int col = chipIndex % 4;
 				int row = chipIndex / 4;
-				DrawRectGraph(x * w - scrollX, y * h, col * w, row * h, w, h, hitemImage, TRUE);
+				DrawRectGraph(x * w - scrollX, y * h, col * w, row * h, w, h,hItemImage, TRUE);
 			}
 			
 		}
+	}
+
+	for (Enemy* e : enemies) {
+		e->Draw();
 	}
 }
 
@@ -167,7 +173,7 @@ void Stage::RemoveChip(const VECTOR2& worldPos)
 
 
 
-bool Stage::IsWall(VECTOR2 pos)
+bool Stage::IsWall(const VECTOR2& pos) const
 {
 	// チップの場所を特定する
 	int x = pos.x / imageSize.x;

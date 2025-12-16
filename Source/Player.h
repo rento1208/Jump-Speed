@@ -22,5 +22,7 @@ public:
 	float moveSpeed;         // 移動速度
 	float animTimer;         // アニメーション時間用タイマー
 	float animInterval;      // フレームの切り替え間隔（秒）
+	float AttackPower;       //攻撃回数
+	float DiffencePower;    // 防御回数
 	int prevTime = GetNowCount();  // 前回の時間取得値
 };

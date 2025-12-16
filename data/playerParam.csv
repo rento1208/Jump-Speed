@@ -1,3 +1,5 @@
-Gravity,0.2,キャラクターの重さ
-JumpHeight,210,ジャンプの高さ（１ブロックが64
-MoveSpeed,2.5,横移動の速度
+Gravity,0.2,キャラクターの重さ,,
+JumpHeight,210,ジャンプの高さ（１ブロックが64,,
+MoveSpeed,2.5,横移動の速度,,
+AttackPower,0,プレイヤーの攻撃できる回数,,
+Diffence,0,プレイヤーの防御シールド数,,
