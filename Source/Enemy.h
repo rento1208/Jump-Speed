@@ -15,6 +15,8 @@ public:
 
     void Update() override;
     void Draw() override;
+    Rect GetRect() const;
+    bool IsDead() const;
 
 private:
     EnemyState State;

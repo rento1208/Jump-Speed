@@ -7,6 +7,7 @@ class Stage : public Object2D {
 public:
 	Stage();
 	~Stage();
+	void Update() override;
 	void Draw() override;
 	float ScrollX() { return scrollX; }
 

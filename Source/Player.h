@@ -12,6 +12,11 @@ public:
 	void Draw() override;
 	VECTOR2 GetPosition() const;
 	void DrawScore();        
+	Rect GetRect() const;
+	int GetAttackPower() const;
+	float GetvelocityY() const;
+	
+
 
 	float velocityY;         // Y方向の速度
 	bool onGround;           // 地面に接地しているか
@@ -25,4 +30,5 @@ public:
 	float AttackPower;       //攻撃回数
 	float DiffencePower;    // 防御回数
 	int prevTime = GetNowCount();  // 前回の時間取得値
+	
 };

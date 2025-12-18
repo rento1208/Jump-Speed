@@ -5,7 +5,7 @@
 enum class ItemType {
     JumpUp,       // チップ17
     SpeedUp,      // チップ14
-    FullRecover,  // チップ15
+   SpeedDown,  // チップ15
     GravityUp,    // チップ16
     Score,        // チップ11
     GameClear,     // チップ10

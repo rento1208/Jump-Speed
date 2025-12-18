@@ -1,7 +1,11 @@
 #include "Enemy.h"
 #include "Stage.h"
+#include "Player.h"
 #include <DxLib.h>
 #include <assert.h>
+
+
+
 
 Enemy::Enemy(const VECTOR2& pos)
 {
@@ -39,7 +43,7 @@ void Enemy::Update()
     if (!st) return;
 
     //左右移動
-    position.x += vx;
+    position.x -= vx;
 
     //壁に当たったら反転
     VECTOR2 right = position + VECTOR2(imageSize.x / 2, 0);
@@ -62,6 +66,65 @@ void Enemy::Update()
         position.y -= down;
         vy = 0;
     }
+
+    if (State == ENEMY_DEAD)
+        return;
+	
+    //プレイヤーとの当たり判定
+    Player* pl = FindGameObject<Player>();
+    if (!pl || State == ENEMY_DEAD)
+        return;
+
+    Rect er = GetRect();
+    Rect pr = pl->GetRect();
+
+    if (!Intersect(er, pr))
+        return;
+
+    VECTOR2 ppos = pl->GetPosition();
+
+    //プレイヤーの足元Y
+    float playerFootY = pr.bottom;
+
+    //敵の頭Y
+    float enemyHeadY = er.top;
+
+    //少し余裕を持たせる
+    const float stompMargin = 6.0f;
+
+    //上から踏んだか
+    bool stomp =
+        playerFootY <= enemyHeadY + stompMargin &&
+        pl->GetvelocityY() > 0;   // 落下中のみ
+
+    if (stomp)
+    {
+        // 踏み
+        if (pl->GetAttackPower() >= 1)
+        {
+            State = ENEMY_DEAD;
+			pl->AttackPower -= 1;
+        }
+        else
+        {
+            // 攻撃力0で敵と接触→ 死
+			SceneManager::ChangeScene("GAMEOVER");
+        }
+    }
+    else
+    {
+        //横・下・斜め
+        if (pl->GetAttackPower() >= 1)
+        {
+            State = ENEMY_DEAD;
+            pl->AttackPower -= 1;
+        }
+        else
+        {
+			SceneManager::ChangeScene("GAMEOVER");
+        }
+    }
+
 }
 
 
@@ -75,4 +138,16 @@ void Enemy::Draw()
 
     DrawRectGraph(drawX, drawY, imageSize.x, imageSize.y, 0, 0, imageSize.x, imageSize.y, hImage, FALSE);
     DrawGraph(drawX, drawY, hImage, TRUE);
+
+    if (State == ENEMY_DEAD) return;
+}
+
+Rect Enemy::GetRect() const
+{
+   return MakeRect(position, imageSize);
+}
+
+bool Enemy::IsDead() const
+{
+    return State == ENEMY_DEAD;
 }

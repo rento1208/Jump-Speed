@@ -24,13 +24,39 @@ inline float VSize(VECTOR2 v) {
 	return sqrtf(v.x * v.x + v.y * v.y);
 }
 
+struct Rect
+{
+	float left;
+	float top;
+	float right;
+	float bottom;
+};
+
+inline Rect MakeRect(const VECTOR2& pos, const VECTOR2& size)
+{
+	return {
+		pos.x - size.x / 2,
+		pos.y - size.y / 2,
+		pos.x + size.x / 2,
+		pos.y + size.y / 2
+	};
+}
+
+inline bool Intersect(const Rect& a, const Rect& b)
+{
+	return !(a.right < b.left ||
+		a.left > b.right ||
+		a.bottom < b.top ||
+		a.top > b.bottom);
+}
+
 class Object2D : public GameObject {
 public:
 	Object2D();
 	virtual ~Object2D();
 	virtual void Update() override;
 	virtual void Draw() override;
-	VECTOR2 GetPosition() { return position; }
+	const VECTOR2& GetPosition()const { return position; }
 protected:
 	int hImage; // ‰æ‘œ‚ð“Ç‚Þ‚½‚ß
 	int hSound;

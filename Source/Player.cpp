@@ -7,7 +7,6 @@
 #include "Item.h"
 #include "SoundManager.h"
 
-
 int g_score = 0;
 
 Player::Player() : Player(VECTOR2(100,200))
@@ -49,6 +48,7 @@ Player::Player(VECTOR2 pos)
 	prevPushed = false;
 	AttackPower = 0.0f;
 	DiffencePower = 0.0f;
+	
 }
 	
 
@@ -173,7 +173,7 @@ void Player::Update()
 		case 10: type = ItemType::GameClear; break;
 		case 11: type = ItemType::Score; break;
 		case 14: type = ItemType::SpeedUp; break;
-		case 15: type = ItemType::FullRecover; break;
+		case 15: type = ItemType::SpeedDown; break;
 		case 16: type = ItemType::GravityUp; break;
 		case 17: type = ItemType::JumpUp; break;
 		case 12: type = ItemType::Sword; break;
@@ -187,6 +187,8 @@ void Player::Update()
 		// スコアやゲームクリアの場合は処理をスキップ
 		if (type == ItemType::Score || type == ItemType::GameClear) return;
 	}
+
+	
      /*ImGui::Begin("Player");
 		ImGui::Checkbox("onGround", &onGround);
 		ImGui::InputFloat("positionY", &position.y);
@@ -200,9 +202,29 @@ void Player::DrawScore()
 // スコアを表示
  float fSize = SetFontSize(30);
 DrawFormatString(10, 10, GetColor(0, 0, 0), "Score: %d", g_score,fSize);
-DrawFormatString(10, 50, GetColor(0, 0, 0), "Attack Power: %.0f", AttackPower,fSize);
-DrawFormatString(10, 90, GetColor(0, 0, 0), "Diffence Power: %.0f", DiffencePower,fSize);
+DrawFormatString(10, 50, GetColor(0, 0, 0), "攻撃可能回数: %.0f", AttackPower,fSize);
+
 }
+
+Rect Player::GetRect() const
+{
+	return MakeRect(position, imageSize);
+}
+
+
+
+int Player::GetAttackPower() const
+{
+	return AttackPower;
+}
+
+
+float Player::GetvelocityY() const
+{
+	return velocityY;
+}
+
+
 
 
 void Player::Draw()

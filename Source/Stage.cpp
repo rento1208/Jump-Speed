@@ -71,6 +71,23 @@ Stage::~Stage()
 {
 }
 
+void Stage::Update()
+{
+	for (auto it = enemies.begin(); it != enemies.end(); )
+	{
+		if ((*it)->IsDead())
+		{
+			delete* it;
+			*it = nullptr;
+			it = enemies.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
 void Stage::Draw()
 {
 	int w = imageSize.x;
@@ -184,12 +201,14 @@ bool Stage::IsWall(const VECTOR2& pos) const
 	if (x < 0 || x >= map[y].size()) {
 		return false;
 	}
+
+	int c = map[y][x];
 	// チップの番号を見て、壁かどうか確定する
-	switch (map[y][x]) {
-	case 0:
-	case 9:
-	case 8:
-		return false;
-	}
+	if (c == 0) return false;        // 空
+	if (c == 8) return false;        // 敵
+	if (c == 9) return false;        // プレイヤー
+	if (c >= 10 && c <= 21) return false; //アイテム・コイン
+
 	return true;
+	
 }
