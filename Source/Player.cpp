@@ -8,6 +8,7 @@
 #include "SoundManager.h"
 
 int g_score = 0;
+int g_time = 0;
 
 Player::Player() : Player(VECTOR2(100,200))
 {
@@ -47,7 +48,9 @@ Player::Player(VECTOR2 pos)
 	onGround = false;
 	prevPushed = false;
 	AttackPower = 0.0f;
-	DiffencePower = 0.0f;
+	playerHP = 100;
+	invincibleMax = 0.8f;  
+	invincibleTime = 0.0f;
 	
 }
 	
@@ -173,7 +176,7 @@ void Player::Update()
 		case 10: type = ItemType::GameClear; break;
 		case 11: type = ItemType::Score; break;
 		case 14: type = ItemType::SpeedUp; break;
-		case 15: type = ItemType::SpeedDown; break;
+		case 15: type = ItemType::Ricaver; break;
 		case 16: type = ItemType::GravityUp; break;
 		case 17: type = ItemType::JumpUp; break;
 		case 12: type = ItemType::Sword; break;
@@ -188,6 +191,21 @@ void Player::Update()
 		if (type == ItemType::Score || type == ItemType::GameClear) return;
 	}
 
+	// 無敵時間の更新
+	const float dt = 1.0f / 60.0f;
+
+	if (invincibleTime > 0.0f)
+	{
+		invincibleTime -= dt;
+		if (invincibleTime < 0.0f)
+			invincibleTime = 0.0f;
+	}
+
+	// ゲームオーバー判定
+	if (playerHP <= 0)
+	{
+		SceneManager::ChangeScene("GAMEOVER");
+	}
 	
      /*ImGui::Begin("Player");
 		ImGui::Checkbox("onGround", &onGround);
@@ -203,6 +221,7 @@ void Player::DrawScore()
  float fSize = SetFontSize(30);
 DrawFormatString(10, 10, GetColor(0, 0, 0), "Score: %d", g_score,fSize);
 DrawFormatString(10, 50, GetColor(0, 0, 0), "攻撃可能回数: %.0f", AttackPower,fSize);
+DrawFormatString(10, 90, GetColor(0, 0, 0), "体力: %d", playerHP, fSize);
 
 }
 
@@ -224,6 +243,31 @@ float Player::GetvelocityY() const
 	return velocityY;
 }
 
+bool Player::IsInvincible() const
+{
+	return invincibleTime > 0.0f;
+}
+
+void Player::ConsumeAttackPower(int v)
+{
+	AttackPower -= v;
+	if (AttackPower < 0) AttackPower = 0;
+}
+
+void Player::Bounce()
+{
+	velocityY = JumpV0 * 0.7f; // 通常ジャンプより少し弱め
+	onGround = false;
+}
+
+void Player::Damage(int dmg)
+{
+	if (invincibleTime > 0.0f) return;
+
+	playerHP -= dmg;
+	invincibleTime = invincibleMax;
+}
+
 
 
 
@@ -243,7 +287,12 @@ void Player::Draw()
 		(int)(position.y - imageSize.y / 2),        // 描画Y
 		srcX, srcY,                                 // 元画像の切り取り位置
 		(int)imageSize.x, (int)imageSize.y,         // 切り取るサイズ
-		hImage, TRUE);     
+		hImage, TRUE);
+
+	// 無敵時間中は点滅表示
+	if (invincibleTime > 0.0f && ((int)(invincibleTime * 10) % 2 == 0))
+		return;
+
 	DrawScore();
 	
 }

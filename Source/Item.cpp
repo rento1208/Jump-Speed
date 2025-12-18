@@ -27,11 +27,11 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        break;
 	  
       
-       //スピードDOWN
-   case ItemType::SpeedDown:
+       //体力回復
+   case ItemType::Ricaver:
       g_soundManager->Play(SoundType::Poison);
 	  g_soundManager->Play(SoundType::Status);
-	  player->moveSpeed -= 0.5f;
+      player->playerHP += 40;
        stage->RemoveChip(pos);
        break;
 	  

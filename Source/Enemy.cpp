@@ -39,13 +39,16 @@ Enemy::~Enemy()
 
 void Enemy::Update()
 {
-    Stage* st = FindGameObject<Stage>();
-    if (!st) return;
+    if (State == ENEMY_DEAD)
+        return;
 
-    //左右移動
+    Stage* st = FindGameObject<Stage>();
+    Player* pl = FindGameObject<Player>();
+    if (!st || !pl) return;
+
+    // ===== 移動 =====
     position.x -= vx;
 
-    //壁に当たったら反転
     VECTOR2 right = position + VECTOR2(imageSize.x / 2, 0);
     VECTOR2 left = position - VECTOR2(imageSize.x / 2, 0);
 
@@ -54,11 +57,10 @@ void Enemy::Update()
     else if (vx < 0 && st->IsWall(left))
         vx = Speed;
 
-    //重力
+    // ===== 重力 =====
     vy += Gravity;
     position.y += vy;
 
-    //床判定
     VECTOR2 foot = position + VECTOR2(0, imageSize.y / 2);
     int down = st->CheckDown(foot);
     if (down > 0)
@@ -67,79 +69,64 @@ void Enemy::Update()
         vy = 0;
     }
 
-    if (State == ENEMY_DEAD)
-        return;
-	
-    //プレイヤーとの当たり判定
-    Player* pl = FindGameObject<Player>();
-    if (!pl || State == ENEMY_DEAD)
-        return;
-
+    // ===== 当たり判定 =====
     Rect er = GetRect();
     Rect pr = pl->GetRect();
 
     if (!Intersect(er, pr))
         return;
 
-    VECTOR2 ppos = pl->GetPosition();
-
-    //プレイヤーの足元Y
     float playerFootY = pr.bottom;
-
-    //敵の頭Y
     float enemyHeadY = er.top;
 
-    //少し余裕を持たせる
     const float stompMargin = 6.0f;
 
-    //上から踏んだか
     bool stomp =
         playerFootY <= enemyHeadY + stompMargin &&
-        pl->GetvelocityY() > 0;   // 落下中のみ
+        pl->GetvelocityY() > 0;
 
     if (stomp)
     {
-        // 踏み
+        //踏みつけ
+        pl->Bounce();   //踏み反発（最重要）
+
         if (pl->GetAttackPower() >= 1)
         {
             State = ENEMY_DEAD;
-			pl->AttackPower -= 1;
+            pl->ConsumeAttackPower(1);
         }
         else
         {
-            // 攻撃力0で敵と接触→ 死
-			SceneManager::ChangeScene("GAMEOVER");
+            pl->Damage(50);
         }
     }
+	//踏みつけ以外の当たり方
     else
     {
-        //横・下・斜め
         if (pl->GetAttackPower() >= 1)
         {
             State = ENEMY_DEAD;
-            pl->AttackPower -= 1;
+            pl->ConsumeAttackPower(1);
         }
         else
         {
-			SceneManager::ChangeScene("GAMEOVER");
+            pl->Damage(50);
         }
     }
-
 }
-
 
 void Enemy::Draw()
 {
+
+    if (State == ENEMY_DEAD) return;
+
     Stage* st = FindGameObject<Stage>();
     if (!st || hImage <= 0) return;
 
     int drawX = (int)(position.x - imageSize.x / 2 - st->ScrollX());
     int drawY = (int)(position.y - imageSize.y / 2);
 
-    DrawRectGraph(drawX, drawY, imageSize.x, imageSize.y, 0, 0, imageSize.x, imageSize.y, hImage, FALSE);
     DrawGraph(drawX, drawY, hImage, TRUE);
-
-    if (State == ENEMY_DEAD) return;
 }
 
 Rect Enemy::GetRect() const

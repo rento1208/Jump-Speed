@@ -15,6 +15,10 @@ public:
 	Rect GetRect() const;
 	int GetAttackPower() const;
 	float GetvelocityY() const;
+	bool IsInvincible() const;
+	void Damage(int dmg);
+	void ConsumeAttackPower(int v);
+	void Bounce();
 	
 
 
@@ -28,7 +32,9 @@ public:
 	float animTimer;         // アニメーション時間用タイマー
 	float animInterval;      // フレームの切り替え間隔（秒）
 	float AttackPower;       //攻撃回数
-	float DiffencePower;    // 防御回数
 	int prevTime = GetNowCount();  // 前回の時間取得値
+	int playerHP; 		 // プレイヤーの体力
+	float invincibleTime;     // 残り無敵時間（秒）
+	float invincibleMax;      // 無敵時間（秒）
 	
 };
