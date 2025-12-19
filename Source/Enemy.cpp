@@ -22,6 +22,9 @@ Enemy::Enemy(const VECTOR2& pos)
 	frameX = 0;
 	animTimer = 0.0f;
 	animInterval = 0.1f;
+	moveRange = 100.0f;      // 左右に動く範囲
+	originX = pos.x;       // 初期X座標（基準点）
+	moveDir = 1;              // 移動方向（1:右, -1:左）
 
 
     //敵画像サイズ
@@ -45,9 +48,7 @@ void Enemy::Update()
     Stage* st = FindGameObject<Stage>();
     Player* pl = FindGameObject<Player>();
     if (!st || !pl) return;
-
-    // ===== 移動 =====
-    position.x -= vx;
+  
 
     VECTOR2 right = position + VECTOR2(imageSize.x / 2, 0);
     VECTOR2 left = position - VECTOR2(imageSize.x / 2, 0);
@@ -57,7 +58,20 @@ void Enemy::Update()
     else if (vx < 0 && st->IsWall(left))
         vx = Speed;
 
-    // ===== 重力 =====
+    position.x += Speed * moveDir;
+    
+    VECTOR2 frontFoot;
+    frontFoot.x = position.x + (imageSize.x / 2 + 2) * moveDir;
+    frontFoot.y = position.y + imageSize.y / 2 + 2;
+  
+    int frontDown = st->CheckDown(frontFoot);
+    if (frontDown <= 0)
+    {
+        moveDir *= -1;
+    }
+ 
+
+    //重力
     vy += Gravity;
     position.y += vy;
 
@@ -69,7 +83,7 @@ void Enemy::Update()
         vy = 0;
     }
 
-    // ===== 当たり判定 =====
+    //当たり判定
     Rect er = GetRect();
     Rect pr = pl->GetRect();
 
@@ -88,7 +102,7 @@ void Enemy::Update()
     if (stomp)
     {
         //踏みつけ
-        pl->Bounce();   //踏み反発（最重要）
+        pl->Bounce();   //踏み反発
 
         if (pl->GetAttackPower() >= 1)
         {

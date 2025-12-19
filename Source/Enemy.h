@@ -30,5 +30,7 @@ private:
     int frameX;
     float animTimer;
     float animInterval;
- 
+    float moveRange;          // 左右に動く範囲
+    float originX;             // 初期X座標（基準点）
+    int moveDir;                  // 移動方向（1:右, -1:左）
 };

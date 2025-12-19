@@ -49,7 +49,7 @@ Player::Player(VECTOR2 pos)
 	prevPushed = false;
 	AttackPower = 0.0f;
 	playerHP = 100;
-	invincibleMax = 0.8f;  
+	invincibleMax = 1.0f;  
 	invincibleTime = 0.0f;
 	
 }
@@ -267,8 +267,6 @@ void Player::Damage(int dmg)
 	playerHP -= dmg;
 	invincibleTime = invincibleMax;
 }
-
-
 
 
 void Player::Draw()

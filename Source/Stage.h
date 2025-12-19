@@ -22,11 +22,11 @@ public:
 	/// </summary>
 	/// <param name="pos">’²‚×‚é“_</param>
 	/// <returns>“–‚½‚Á‚Ä‚¢‚ê‚ÎA¶‚É‰Ÿ‚µ•Ô‚·—Ê</returns>
-	int CheckRight(VECTOR2 pos);
+	int CheckRight(VECTOR2 pos); 
 
 	int CheckLeft(VECTOR2 pos);
 
-	int CheckDown(VECTOR2 pos);
+	int CheckDown(VECTOR2 pos); 
 
 	int CheckUp(VECTOR2 pos);
 
