@@ -22,6 +22,9 @@ public:
 	
 
 
+	
+
+
 	float velocityY;         // Y方向の速度
 	bool onGround;           // 地面に接地しているか
 	bool prevPushed;         // 前フレームでジャンプボタンが押されていたか
@@ -36,5 +39,6 @@ public:
 	int playerHP; 		 // プレイヤーの体力
 	float invincibleTime;     // 残り無敵時間（秒）
 	float invincibleMax;      // 無敵時間（秒）
+	int timer; // ゲーム時間計測用タイマー
 	
 };

@@ -9,8 +9,7 @@ enum class ItemType {
     GravityUp,    // チップ16
     Score,        // チップ11
     GameClear,     // チップ10
-    Sword,         //チップ12
-	Shield		  //チップ13
+    Sword       //チップ12
 
 };
 

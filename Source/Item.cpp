@@ -1,6 +1,7 @@
 #include "Item.h"
 #include "DxLib.h"  // PlaySoundMem ‚È‚Ç
 #include "SoundManager.h"
+#include "../GameData.h"
 
 
 
@@ -31,8 +32,11 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
    case ItemType::Ricaver:
       g_soundManager->Play(SoundType::Poison);
 	  g_soundManager->Play(SoundType::Status);
-      player->playerHP += 40;
-       stage->RemoveChip(pos);
+      if (player->playerHP < 100)
+      {
+          player->playerHP += 40;
+      }
+      stage->RemoveChip(pos);
        break;
 	  
       
@@ -56,6 +60,10 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
        
        // ƒQ[ƒ€ƒNƒŠƒA
    case ItemType::GameClear:
+       if (!g_isCleared) {
+           g_clearTime = g_time;
+           g_isCleared = true;
+       }
       g_soundManager->Play(SoundType::Result);
        stage->RemoveChip(pos);
        SceneManager::ChangeScene("GAMECLEAR");

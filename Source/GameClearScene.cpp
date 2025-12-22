@@ -1,6 +1,7 @@
 #include "GameClearScene.h"
 #include "Stage.h"
 #include "Player.h"
+#include "../GameData.h"
 GameClearScene::GameClearScene()
 	:SceneBase(), hImage(0), changeTimer(0.0f)
 {
@@ -31,6 +32,9 @@ void GameClearScene::Draw()
 	
 	// スコア表示
 	DrawFormatString(450, 350, GetColor(255, 255, 255), "Your Score: %d", g_score);
+
+	//クリアタイム表示
+	DrawFormatString(450, 400, GetColor(255, 255, 255), "Clear Time: %.2f seconds", g_clearTime / 60.0f);
 	
 	int time = GetNowCount();
 	if ((time / 700) % 2 == 0) {
