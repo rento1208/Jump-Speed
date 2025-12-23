@@ -74,7 +74,7 @@ void Item::Apply(Player* player, Stage* stage, const VECTOR2& pos) {
    case ItemType::Sword:
        // ‚±‚±‚ÉŒ•‚ÌŒø‰Ê‚ð‚Ü‚Æ‚ß‚é
        stage->RemoveChip(pos); 
-	   player->AttackPower += 1.0f; // UŒ‚‰Â”\‰ñ”‚ð‘‚â‚·
+	   player->AttackCount += 1.0f; // UŒ‚‰Â”\‰ñ”‚ð‘‚â‚·
        g_soundManager->Play(SoundType::Status);
        break;
 

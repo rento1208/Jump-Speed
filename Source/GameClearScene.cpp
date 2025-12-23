@@ -34,7 +34,7 @@ void GameClearScene::Draw()
 	DrawFormatString(450, 350, GetColor(255, 255, 255), "Your Score: %d", g_score);
 
 	//クリアタイム表示
-	DrawFormatString(450, 400, GetColor(255, 255, 255), "Clear Time: %.2f seconds", g_clearTime / 60.0f);
+	DrawFormatString(300, 400, GetColor(255, 255, 255), "Clear Time: %.2f seconds", g_clearTime / 60.0f);
 	
 	int time = GetNowCount();
 	if ((time / 700) % 2 == 0) {

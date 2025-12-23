@@ -104,27 +104,27 @@ void Enemy::Update()
         //“¥‚Ý‚Â‚¯
         pl->Bounce();   //“¥‚Ý”½”­
 
-        if (pl->GetAttackPower() >= 1)
+        if (pl->GetAttackCount() >= 1)
         {
             State = ENEMY_DEAD;
-            pl->ConsumeAttackPower(1);
+            pl->ConsumeAttackCount(1);
         }
         else
         {
-            pl->Damage(50);
+            pl->Damage(30);
         }
     }
 	//“¥‚Ý‚Â‚¯ˆÈŠO‚Ì“–‚½‚è•û
     else
     {
-        if (pl->GetAttackPower() >= 1)
+        if (pl->GetAttackCount() >= 1)
         {
             State = ENEMY_DEAD;
-            pl->ConsumeAttackPower(1);
+            pl->ConsumeAttackCount(1);
         }
         else
         {
-            pl->Damage(50);
+            pl->Damage(30);
         }
     }
 }

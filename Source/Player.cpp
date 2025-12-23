@@ -46,11 +46,17 @@ Player::Player(VECTOR2 pos)
 	velocityY = 0.0f;
 	onGround = false;
 	prevPushed = false;
-	AttackPower = 0.0f;
+	AttackCount = 0.0f;
 	playerHP = 100;
 	invincibleMax = 1.0f;  
 	invincibleTime = 0.0f;
 	timer = 0;
+	hp = playerHP;
+	maxAttackCount = 5;
+	
+
+	
+
 	
 }
 	
@@ -220,11 +226,10 @@ void Player::Update()
 void Player::DrawScore()
 {
 // スコアを表示
- float fSize = SetFontSize(30);
-DrawFormatString(10, 10, GetColor(0, 0, 0), "Score: %d", g_score,fSize);
-DrawFormatString(10, 50, GetColor(0, 0, 0), "攻撃可能回数: %.0f", AttackPower,fSize);
-DrawFormatString(10, 90, GetColor(0, 0, 0), "体力: %d", playerHP, fSize);
-DrawFormatString(10, 130, GetColor(0, 0, 0), "経過時間: %.2f秒", timer / 60.0f, fSize);
+ float fSize = SetFontSize(32);
+DrawFormatString(550, 10, GetColor(255,255,0), "Score: %d", g_score,fSize);
+DrawFormatString(10, 70, GetColor(0, 0, 0), "攻撃可能回数: %.0f", AttackCount,fSize);
+DrawFormatString(980, 10, GetColor(0, 0, 0), "経過時間: %.2f秒", timer / 60.0f, fSize);
 
 }
 
@@ -235,9 +240,9 @@ Rect Player::GetRect() const
 
 
 
-int Player::GetAttackPower() const
+int Player::GetAttackCount() const
 {
-	return AttackPower;
+	return AttackCount;
 }
 
 
@@ -246,22 +251,57 @@ float Player::GetvelocityY() const
 	return velocityY;
 }
 
+
 bool Player::IsInvincible() const
 {
 	return invincibleTime > 0.0f;
 }
 
-void Player::ConsumeAttackPower(int v)
+
+void Player::ConsumeAttackCount(int v)
 {
-	AttackPower -= v;
-	if (AttackPower < 0) AttackPower = 0;
+	AttackCount -= v;
+	if (AttackCount < 0) AttackCount = 0;
 }
+
 
 void Player::Bounce()
 {
 	velocityY = JumpV0 * 0.7f; //通常ジャンプより少し弱め
 	onGround = false;
 }
+
+
+void Player::DrawGauge()
+{
+	int x = 20;
+	int y = 30;
+	int width = 200;
+	int height = 20;
+
+	const float HP_DANGER_RATE = 0.4f;
+	float hpRate = (float)playerHP /hp ;
+	int hpColor;
+
+	// 背景
+	DrawBox(x, y, x + width, y + height, GetColor(50, 50, 50), TRUE);
+
+	
+	if (hpRate <= HP_DANGER_RATE)
+	{
+		hpColor = GetColor(255, 0, 0);   // 危険：赤
+	}
+	else
+	{
+		hpColor = GetColor(0, 255, 0);   // 通常：緑
+	}
+	// HPバー
+	DrawBox(x, y, x + (int)(width * hpRate), y + height, hpColor, TRUE);
+
+
+	DrawString(x, y - 20, "HP", GetColor(0,0,0));
+}
+
 
 void Player::Damage(int dmg)
 {
@@ -277,8 +317,7 @@ void Player::Draw()
 	Object2D::Draw();
 	Stage* st = FindGameObject<Stage>();
 	float x = position.x - st->ScrollX();
-	/*DrawBox(x - 24, position.y - 32, x + 24, position.y + 32,
-		GetColor(255, 0, 0), FALSE);*/
+	
 
 	int srcX = anim * (int)imageSize.x;
 	int srcY = animY * (int)imageSize.y;
@@ -295,6 +334,7 @@ void Player::Draw()
 		return;
 
 	DrawScore();
+	DrawGauge();
 
 	
 }

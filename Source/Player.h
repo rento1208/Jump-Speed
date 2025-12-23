@@ -13,13 +13,13 @@ public:
 	VECTOR2 GetPosition() const;
 	void DrawScore();        
 	Rect GetRect() const;
-	int GetAttackPower() const;
+	int GetAttackCount() const;
 	float GetvelocityY() const;
 	bool IsInvincible() const;
 	void Damage(int dmg);
-	void ConsumeAttackPower(int v);
+	void ConsumeAttackCount(int v);
 	void Bounce();
-	
+	void DrawGauge();
 
 
 	
@@ -34,11 +34,13 @@ public:
 	float moveSpeed;         // 移動速度
 	float animTimer;         // アニメーション時間用タイマー
 	float animInterval;      // フレームの切り替え間隔（秒）
-	float AttackPower;       //攻撃回数
+	float AttackCount;       //攻撃回数
 	int prevTime = GetNowCount();  // 前回の時間取得値
 	int playerHP; 		 // プレイヤーの体力
 	float invincibleTime;     // 残り無敵時間（秒）
 	float invincibleMax;      // 無敵時間（秒）
 	int timer; // ゲーム時間計測用タイマー
+	int maxAttackCount;
+	int hp;
 	
 };
