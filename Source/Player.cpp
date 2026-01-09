@@ -50,13 +50,8 @@ Player::Player(VECTOR2 pos)
 	playerHP = 100;
 	invincibleMax = 1.0f;  
 	invincibleTime = 0.0f;
-	timer = 0;
 	hp = playerHP;
 	maxAttackCount = 5;
-	
-
-	
-
 	
 }
 	
@@ -214,7 +209,6 @@ void Player::Update()
 	}
 
 	
-	timer++;
      /*ImGui::Begin("Player");
 		ImGui::Checkbox("onGround", &onGround);
 		ImGui::InputFloat("positionY", &position.y);
@@ -229,8 +223,6 @@ void Player::DrawScore()
  float fSize = SetFontSize(32);
 DrawFormatString(550, 10, GetColor(255,255,0), "Score: %d", g_score,fSize);
 DrawFormatString(10, 70, GetColor(0, 0, 0), "çUåÇâ¬î\âÒêî: %.0f", AttackCount,fSize);
-DrawFormatString(980, 10, GetColor(0, 0, 0), "åoâﬂéûä‘: %.2fïb", timer / 60.0f, fSize);
-
 }
 
 Rect Player::GetRect() const

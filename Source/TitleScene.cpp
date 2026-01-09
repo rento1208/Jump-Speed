@@ -1,6 +1,7 @@
 #include "TitleScene.h"
 #include <DxLib.h>
 #include "TitleStage.h"
+#include "../GameData.h"
 
 TitleScene::TitleScene()
 {
@@ -17,6 +18,8 @@ TitleScene::~TitleScene()
 void TitleScene::Update()
 {
 	if (CheckHitKey(KEY_INPUT_SPACE)) {
+		g_time = 0;
+		g_clearTime = 0;
 		SceneManager::ChangeScene("PLAY");
 	}
 	if (CheckHitKey(KEY_INPUT_ESCAPE)) {

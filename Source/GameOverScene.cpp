@@ -16,7 +16,6 @@ void GameOverScene::Update()
 {
 	if (CheckHitKey(KEY_INPUT_T)) {
 		SceneManager::ChangeScene("TITLE");
-		g_score = 0;
 	}
 	if (CheckHitKey(KEY_INPUT_ESCAPE)) {
 		SceneManager::Exit();
@@ -25,6 +24,7 @@ void GameOverScene::Update()
 
 void GameOverScene::Draw()
 {
+	
 	DrawExtendGraph(0, 0, 1280, 720, hImage, TRUE);
 	int rsize = SetFontSize(50);
 	int time = GetNowCount();

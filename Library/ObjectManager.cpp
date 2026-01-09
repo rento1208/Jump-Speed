@@ -81,6 +81,7 @@ void ObjectManager::Pop(GameObject* obj)
 	for (auto itr = objects->begin(); itr != objects->end();) {
 		if (*itr == obj) {
 			itr = objects->erase(itr);
+		
 		}
 		else {
 			itr++;
